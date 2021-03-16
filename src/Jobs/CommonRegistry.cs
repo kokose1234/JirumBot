@@ -1,4 +1,5 @@
 ﻿using FluentScheduler;
+using JirumBot.Data;
 
 namespace JirumBot.Jobs
 {
@@ -6,8 +7,8 @@ namespace JirumBot.Jobs
     {
         internal CommonRegistry()
         {
-            Schedule<CoolJob>().ToRunNow().AndEvery(10).Seconds();
-            Schedule<QuasarJob>().ToRunNow().AndEvery(10).Seconds();
+            Schedule<CoolJob>().ToRunNow().AndEvery(Setting.Value.RefreshInterval).Seconds();
+            Schedule<QuasarJob>().ToRunNow().AndEvery(Setting.Value.RefreshInterval).Seconds();
         }
     }
 }

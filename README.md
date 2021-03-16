@@ -41,6 +41,7 @@
     "quasarJirumTitlePath2" : "/html[1]/body[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/form[1]/div[1]/div[3]/div[3]/table[1]/tbody[1]/tr[1]/td[2]/p[1]/a[2]",
     "quasarJirumUrlPath2": "/html[1]/body[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/form[1]/div[1]/div[3]/div[3]/table[1]/tbody[1]/tr[1]/td[2]/p[1]/a[2]",
     "quasarJirumThumbnailUrlPath2": "/html[1]/body[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]/form[1]/div[1]/div[3]/div[3]/table[1]/tbody[1]/tr[1]/td[2]/p[1]/a[1]/span[1]",
+    "refreshInterval": 새로고침 주기 (초),
    	"keywords": []
 }
 ~~~
