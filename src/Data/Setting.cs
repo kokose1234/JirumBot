@@ -50,6 +50,8 @@ namespace JirumBot.Data
         public string QuasarJirumUrlPath2 { get; init; }
         [JsonProperty("quasarJirumThumbnailUrlPath2")]
         public string QuasarJirumThumbnailUrlPath2 { get; init; }
+        [JsonProperty("refreshInterval")]
+        public int RefreshInterval { get; init; }
         [JsonProperty("keywords")]
         public ImmutableList<string> Keywords { get; init; }
     }
