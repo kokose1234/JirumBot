@@ -5,12 +5,12 @@ using OpenQA.Selenium.Chrome;
 
 namespace JirumBot.ChromeManagers
 {
-    public abstract class ChromeManager
+    public abstract class ChromeManager : IDisposable
     {
         private readonly ChromeDriverService driverService;
         private readonly ChromeOptions options;
 
-        public ChromeDriver Driver { get; }
+        public ChromeDriver Driver { get; private set; }
         public Article LatestArticle { get; protected set; }
 
         public ChromeManager()
@@ -28,5 +28,12 @@ namespace JirumBot.ChromeManagers
 
         public abstract Task<bool> Login(string returnUrl);
         public abstract Task<bool> GetNewArticle();
+
+        public void Dispose()
+        {
+            Driver.Quit();
+            Driver.Dispose();
+            Driver = null;
+        }
     }
 }

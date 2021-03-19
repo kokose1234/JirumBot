@@ -65,7 +65,10 @@ namespace JirumBot
             if (arg.Content == "/종료")
             {
                 await arg.DeleteAsync();
-                foreach(var process in Process.GetProcessesByName("chromedriver")) process.Kill();
+                Constants.CoolJirumManager.Dispose();
+                Constants.CoolJirumManager2.Dispose();
+                Constants.QuasarJirumManager.Dispose();
+                Constants.QuasarJirumManager2.Dispose();
                 Environment.Exit(0);
             }
         }
