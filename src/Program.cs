@@ -40,14 +40,9 @@ namespace JirumBot
             var discordSocketClient = configureServices.GetRequiredService<DiscordSocketClient>();
 
             discordSocketClient.Log += Log;
-            discordSocketClient.Disconnected += DiscordSocketClientOnDisconnected;
             discordSocketClient.MessageReceived += DiscordSocketClientOnMessageReceived;
             JobManager.JobException += info => Constants.Logger.GetExceptionLogger().Error(info.Exception, "작업 실행중 예외 발생");
             Constants.DiscordClient = configureServices.GetRequiredService<DiscordSocketClient>();
-
-            await discordSocketClient.LoginAsync(TokenType.Bot, Setting.Value.DiscordBotToken);
-            await discordSocketClient.StartAsync();
-            await discordSocketClient.SetActivityAsync(new Game("돈 쓸 곳 찾는 중"));
 
             await Constants.CoolJirumManager.Login("https://coolenjoy.net/bbs/jirum");
             await Constants.CoolJirumManager2.Login("https://coolenjoy.net/bbs/mart2");
@@ -55,28 +50,31 @@ namespace JirumBot
             await Constants.QuasarJirumManager2.Login("https://quasarzone.com/bbs/qb_jijang");
             Constants.Logger.GetLogger().Info("퀘이사존, 쿨엔조이 로드 완료");
 
+            await discordSocketClient.LoginAsync(TokenType.Bot, Setting.Value.DiscordBotToken);
+            await discordSocketClient.StartAsync();
+            await discordSocketClient.SetActivityAsync(new Game("돈 쓸 곳 찾는 중"));
+
             JobManager.Initialize(new CommonRegistry());
 
             await Task.Delay(-1);
         }
 
-        private static async Task DiscordSocketClientOnMessageReceived(SocketMessage arg)
+        private static Task DiscordSocketClientOnMessageReceived(SocketMessage arg)
         {
             if (arg.Content == "/종료")
             {
-                await arg.DeleteAsync();
+                arg.DeleteAsync();
+                Constants.DiscordClient.LogoutAsync();
+                Constants.DiscordClient.StopAsync();
+                JobManager.RemoveAllJobs();
+                JobManager.Stop();
                 Constants.CoolJirumManager.Dispose();
                 Constants.CoolJirumManager2.Dispose();
                 Constants.QuasarJirumManager.Dispose();
                 Constants.QuasarJirumManager2.Dispose();
                 Environment.Exit(0);
             }
-        }
 
-        private static Task DiscordSocketClientOnDisconnected(Exception arg)
-        {
-            Process.Start("JirumBot.exe");
-            Environment.Exit(0);
             return Task.CompletedTask;
         }
 
