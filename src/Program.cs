@@ -60,15 +60,14 @@ namespace JirumBot
             await Task.Delay(-1);
         }
 
-        private static Task DiscordSocketClientOnMessageReceived(SocketMessage arg)
+        private static async Task DiscordSocketClientOnMessageReceived(SocketMessage arg)
         {
             if (arg.Content == "/종료")
             {
+                await arg.DeleteAsync();
                 foreach(var process in Process.GetProcessesByName("chromedriver")) process.Kill();
                 Environment.Exit(0);
             }
-
-            return Task.CompletedTask;
         }
 
         private static Task DiscordSocketClientOnDisconnected(Exception arg)

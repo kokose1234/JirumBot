@@ -28,7 +28,6 @@
     "discordChannelId" : "디스코드 채널 Id",
     "coolId": "쿨엔조이 Id",
     "coolPassWord": "쿨엔조이 비밀번호",
-    "coolJirumCategoryPath" : "/html[1]/body[1]/div[4]/div[2]/h2[1]",
     "coolJirumTitlePath" : "/html[1]/body[1]/div[4]/div[2]/div[1]/form[1]/div[1]/table[1]/tbody[1]/tr[2]/td[2]/a[1]",
     "coolJirumUrlPath": "/html[1]/body[1]/div[4]/div[2]/div[1]/form[1]/div[1]/table[1]/tbody[1]/tr[2]/td[2]/a[1]",
     "coolJirumTitlePath2" : "/html[1]/body[1]/div[4]/div[2]/div[1]/form[1]/div[1]/table[1]/tbody[1]/tr[3]/td[2]/a[1]",

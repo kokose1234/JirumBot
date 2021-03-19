@@ -35,7 +35,7 @@ namespace JirumBot.ChromeManagers
                 Driver.Navigate().Refresh();
                 await Task.Delay(500);
 
-                var isFirstJirum = IsFirstJirum();
+                var isFirstJirum = Driver.PageSource.Contains("지름,알뜰정보");
                 var title = Driver.FindElementByXPath(isFirstJirum ? Setting.Value.CoolJirumTitlePath : Setting.Value.CoolJirumTitlePath2).Text;
                 var url = Driver.FindElementByXPath(isFirstJirum ? Setting.Value.CoolJirumUrlPath : Setting.Value.CoolJirumUrlPath2)
                                 .GetAttribute("href");
@@ -62,7 +62,5 @@ namespace JirumBot.ChromeManagers
                 return false;
             }
         }
-
-        private bool IsFirstJirum() => Driver.FindElementByXPath(Setting.Value.CoolJirumCategoryPath).Text.Contains("지름,알뜰정보");
     }
 }

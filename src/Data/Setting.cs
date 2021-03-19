@@ -22,8 +22,6 @@ namespace JirumBot.Data
         public string CoolId { get; init; }
         [JsonProperty("coolPassWord")]
         public string CoolPassWord { get; init; }
-        [JsonProperty("coolJirumCategoryPath")]
-        public string CoolJirumCategoryPath { get; init; }
         [JsonProperty("coolJirumTitlePath")]
         public string CoolJirumTitlePath { get; init; }
         [JsonProperty("coolJirumUrlPath")]
@@ -36,8 +34,6 @@ namespace JirumBot.Data
         public string QuasarId { get; init; }
         [JsonProperty("quasarPassWord")]
         public string QuasarPassWord { get; init; }
-        [JsonProperty("quasarJirumCategoryPath")]
-        public string QuasarJirumCategoryPath { get; init; }
         [JsonProperty("quasarJirumTitlePath")]
         public string QuasarJirumTitlePath { get; init; }
         [JsonProperty("quasarJirumUrlPath")]
