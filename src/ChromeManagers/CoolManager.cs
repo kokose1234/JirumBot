@@ -22,8 +22,7 @@ namespace JirumBot.ChromeManagers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("쿨앤조이 로그인 중 오류 발생");
-                Console.WriteLine(ex);
+                Constants.Logger.GetExceptionLogger().Error(ex, "쿨앤조이 로그인 중 오류 발생");
                 return false;
             }
         }
@@ -57,8 +56,7 @@ namespace JirumBot.ChromeManagers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("쿨엔조이 새로고침 중 오류 발생");
-                Console.WriteLine(ex);
+                Constants.Logger.GetExceptionLogger().Error(ex, "쿨엔조이 새로고침 중 오류 발생");
                 return false;
             }
         }
