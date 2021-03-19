@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using JirumBot.Data;
+using OpenQA.Selenium;
 
 namespace JirumBot.ChromeManagers
 {
@@ -22,21 +23,23 @@ namespace JirumBot.ChromeManagers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("퀘이사존 로그인 중 오류 발생");
-                Console.WriteLine(ex);
+                Constants.Logger.GetExceptionLogger().Error(ex, "퀘이사존 로그인 중 오류 발생");
                 return false;
             }
         }
 
         public override async Task<bool> GetNewArticle()
         {
+            if (Driver == null) return false;
+
             try
             {
                 Driver.Navigate().Refresh();
                 await Task.Delay(500);
 
                 var isFirstJirum = Driver.PageSource.Contains("지름/할인정보");
-                var title = Driver.FindElementByXPath(isFirstJirum ? Setting.Value.QuasarJirumTitlePath : Setting.Value.QuasarJirumTitlePath2).Text;
+                var title = Driver.FindElementByXPath(isFirstJirum ? Setting.Value.QuasarJirumTitlePath : Setting.Value.QuasarJirumTitlePath2)
+                                  .Text;
                 var url = Driver.FindElementByXPath(isFirstJirum ? Setting.Value.QuasarJirumUrlPath : Setting.Value.QuasarJirumUrlPath2)
                                 .GetAttribute("href");
                 var thumbnailUrl = isFirstJirum
@@ -60,10 +63,15 @@ namespace JirumBot.ChromeManagers
 
                 return false;
             }
+            catch (UnhandledAlertException ex) when (ex.AlertText == "가입 후 30일 이후에 장터게시판에 글을 읽으실 수 있습니다.")
+            {
+                Constants.Logger.GetExceptionLogger().Error(ex, "퀘이사존 가입 후 30일이 지나지 않아 장터게시판을 열 수 없습니다.");
+                Dispose();
+                return false;
+            }
             catch (Exception ex)
             {
-                Console.WriteLine("퀘이사존 새로고침 중 오류 발생");
-                Console.WriteLine(ex);
+                Constants.Logger.GetExceptionLogger().Error(ex, "퀘이사존 새로고침 중 오류 발생");
                 return false;
             }
         }
