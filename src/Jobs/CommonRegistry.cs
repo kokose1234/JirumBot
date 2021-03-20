@@ -7,6 +7,7 @@ namespace JirumBot.Jobs
     {
         internal CommonRegistry()
         {
+            Schedule<PpomJob>().ToRunNow().AndEvery(Setting.Value.RefreshInterval).Seconds();
             Schedule<CoolJob>().ToRunNow().AndEvery(Setting.Value.RefreshInterval).Seconds();
             Schedule<QuasarJob>().ToRunNow().AndEvery(Setting.Value.RefreshInterval).Seconds();
         }

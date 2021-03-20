@@ -30,6 +30,7 @@ namespace JirumBot
         private static async Task Main(string[] args)
         {
             Console.Title = "JirumBot";
+            AppDomain.CurrentDomain.ProcessExit += CurrentDomainOnProcessExit;
 
             await MainAsync();
         }
@@ -40,42 +41,40 @@ namespace JirumBot
             var discordSocketClient = configureServices.GetRequiredService<DiscordSocketClient>();
 
             discordSocketClient.Log += Log;
-            discordSocketClient.MessageReceived += DiscordSocketClientOnMessageReceived;
             JobManager.JobException += info => Constants.Logger.GetExceptionLogger().Error(info.Exception, "작업 실행중 예외 발생");
             Constants.DiscordClient = configureServices.GetRequiredService<DiscordSocketClient>();
 
+            await Constants.PpomJirumManager.Login("http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu");
+            await Constants.PpomJirumManager2.Login("http://www.ppomppu.co.kr/market_bbs.php");
             await Constants.CoolJirumManager.Login("https://coolenjoy.net/bbs/jirum");
             await Constants.CoolJirumManager2.Login("https://coolenjoy.net/bbs/mart2");
             await Constants.QuasarJirumManager.Login("https://quasarzone.com/bbs/qb_saleinfo");
             await Constants.QuasarJirumManager2.Login("https://quasarzone.com/bbs/qb_jijang");
-            Constants.Logger.GetLogger().Info("퀘이사존, 쿨엔조이 로드 완료");
+            Constants.Logger.GetLogger().Info("퀘이사존, 쿨엔조이, 뽐뿌 로드 완료");
 
             await discordSocketClient.LoginAsync(TokenType.Bot, Setting.Value.DiscordBotToken);
             await discordSocketClient.StartAsync();
-            await discordSocketClient.SetActivityAsync(new Game("돈 쓸 곳 찾는 중"));
+            await discordSocketClient.SetActivityAsync(new Game("돈 쓸 곳 찾기"));
 
             JobManager.Initialize(new CommonRegistry());
 
             await Task.Delay(-1);
         }
 
-        private static Task DiscordSocketClientOnMessageReceived(SocketMessage arg)
+        private static void CurrentDomainOnProcessExit(object sender, EventArgs e)
         {
-            if (arg.Content == "/종료")
+            try
             {
-                arg.DeleteAsync();
-                Constants.DiscordClient.LogoutAsync();
-                Constants.DiscordClient.StopAsync();
-                JobManager.RemoveAllJobs();
-                JobManager.Stop();
-                Constants.CoolJirumManager.Dispose();
-                Constants.CoolJirumManager2.Dispose();
-                Constants.QuasarJirumManager.Dispose();
-                Constants.QuasarJirumManager2.Dispose();
-                Environment.Exit(0);
-            }
+                Constants.DiscordClient.LogoutAsync().Wait();
+                Constants.DiscordClient.StopAsync().Wait();
 
-            return Task.CompletedTask;
+                foreach (var process in Process.GetProcessesByName("chromedriver")) process.Kill(true);
+                Process.GetCurrentProcess().Kill(true);
+            }
+            catch (Exception)
+            {
+                //ignored
+            }
         }
 
         private static ServiceProvider ConfigureServices()

@@ -46,6 +46,18 @@ namespace JirumBot.Data
         public string QuasarJirumUrlPath2 { get; init; }
         [JsonProperty("quasarJirumThumbnailUrlPath2")]
         public string QuasarJirumThumbnailUrlPath2 { get; init; }
+        [JsonProperty("ppomJirumTitlePath")]
+        public string PpomJirumTitlePath { get; init; }
+        [JsonProperty("ppomJirumUrlPath")]
+        public string PpomJirumUrlPath { get; init; }
+        [JsonProperty("ppomJirumThumbnailUrlPath")]
+        public string PpomJirumThumbnailUrlPath { get; init; }
+        [JsonProperty("ppomJirumTitlePath2")]
+        public string PpomJirumTitlePath2 { get; init; }
+        [JsonProperty("ppomJirumUrlPath2")]
+        public string PpomJirumUrlPath2 { get; init; }
+        [JsonProperty("ppomJirumThumbnailUrlPath2")]
+        public string PpomJirumThumbnailUrlPath2 { get; init; }
         [JsonProperty("refreshInterval")]
         public int RefreshInterval { get; init; }
         [JsonProperty("keywords")]
