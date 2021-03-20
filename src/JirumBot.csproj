@@ -6,6 +6,14 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>../Release/</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>../Debug/</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="favicon.ico" />
     <None Remove="NLog.config" />

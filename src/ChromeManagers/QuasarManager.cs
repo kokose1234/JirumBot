@@ -12,7 +12,6 @@ namespace JirumBot.ChromeManagers
             try
             {
                 Driver.Navigate().GoToUrl("https://quasarzone.com/login");
-
                 Driver.FindElementByXPath("//input[@id='login_id']").SendKeys(Setting.Value.QuasarId);
                 Driver.FindElementByXPath("//input[@id='password']").SendKeys(Setting.Value.QuasarPassWord);
                 Driver.FindElementByXPath("//p[@class='login-bt']//a").Click();
@@ -30,22 +29,20 @@ namespace JirumBot.ChromeManagers
 
         public override async Task<bool> GetNewArticle()
         {
-            if (Driver == null) return false;
+            if (Driver == null | IsStopped) return false;
 
             try
             {
                 Driver.Navigate().Refresh();
                 await Task.Delay(500);
 
-                var isFirstJirum = Driver.PageSource.Contains("지름/할인정보");
+                var isFirstJirum = Driver.Url.Contains("qb_saleinfo");
+                var thumbnailPath = isFirstJirum ? Setting.Value.QuasarJirumThumbnailUrlPath : Setting.Value.QuasarJirumThumbnailUrlPath2;
                 var title = Driver.FindElementByXPath(isFirstJirum ? Setting.Value.QuasarJirumTitlePath : Setting.Value.QuasarJirumTitlePath2)
                                   .Text;
                 var url = Driver.FindElementByXPath(isFirstJirum ? Setting.Value.QuasarJirumUrlPath : Setting.Value.QuasarJirumUrlPath2)
                                 .GetAttribute("href");
-                var thumbnailUrl = isFirstJirum
-                    ? Driver.FindElementByXPath(Setting.Value.QuasarJirumThumbnailUrlPath).GetCssValue("background-image")
-                            .Replace("url(\"", "").Replace("\")", "")
-                    : "";
+                var thumbnailUrl = Driver.FindElementByXPath(thumbnailPath).GetCssValue("background-image").Replace("url(\"", "").Replace("\")", "");
 
                 if (LatestArticle == null)
                 {
@@ -66,7 +63,7 @@ namespace JirumBot.ChromeManagers
             catch (UnhandledAlertException ex) when (ex.AlertText == "가입 후 30일 이후에 장터게시판에 글을 읽으실 수 있습니다.")
             {
                 Constants.Logger.GetExceptionLogger().Error(ex, "퀘이사존 가입 후 30일이 지나지 않아 장터게시판을 열 수 없습니다.");
-                Dispose();
+                IsStopped = true;
                 return false;
             }
             catch (Exception ex)
