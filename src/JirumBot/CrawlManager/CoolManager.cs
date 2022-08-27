@@ -11,15 +11,15 @@ namespace JirumBot.CrawlManager
 
         public override async Task<bool> FetchNewArticles()
         {
-            if (HttpClient == null | IsStopped) return false;
+            if (httpClient == null | IsStopped) return false;
 
             try
             {
-                var response = await HttpClient.GetStringAsync("https://coolenjoy.net/bbs/jirum");
+                var response = await httpClient.GetStringAsync("https://coolenjoy.net/bbs/jirum");
                 if (string.IsNullOrEmpty(response)) return false;
-                Document.LoadHtml(response);
+                document.LoadHtml(response);
 
-                var list = Document.DocumentNode.SelectNodes(Setting.Value.CoolBasePath);
+                var list = document.DocumentNode.SelectNodes(Setting.Value.CoolBasePath);
                 foreach (var node in list)
                 {
                     if (node != null)
@@ -29,10 +29,10 @@ namespace JirumBot.CrawlManager
                             var title = node.FirstChild.InnerText.Trim();
                             var url = node.GetAttributeValue("href", "(null)");
 
-                            if (url != "(null)" && !ArticleHistories.Contains(url))
+                            if (url != "(null)" && !articleHistories.Contains(url))
                             {
                                 Articles.Add(new() { Title = title, Url = url });
-                                ArticleHistories.Add(url);
+                                articleHistories.Add(url);
                             }
                         }
                     }

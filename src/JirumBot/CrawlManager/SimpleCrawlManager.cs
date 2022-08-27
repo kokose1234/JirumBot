@@ -9,9 +9,9 @@ namespace JirumBot.CrawlManager;
 
 public abstract class SimpleCrawlManager : ICrawlManager, IDisposable
 {
-    protected readonly HttpClient HttpClient = new();
-    protected readonly HtmlDocument Document = new();
-    protected readonly HashSet<string> ArticleHistories = new();
+    protected readonly HttpClient httpClient = new();
+    protected readonly HtmlDocument document = new();
+    protected readonly HashSet<string> articleHistories = new();
 
     public List<Article> Articles { get; } = new();
     public bool IsStopped { get; protected set; }
@@ -19,13 +19,13 @@ public abstract class SimpleCrawlManager : ICrawlManager, IDisposable
 
     protected SimpleCrawlManager()
     {
-        HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.44");
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44");
     }
 
     public abstract Task<bool> FetchNewArticles();
 
     public void Dispose()
     {
-        HttpClient?.Dispose();
+        httpClient?.Dispose();
     }
 }
