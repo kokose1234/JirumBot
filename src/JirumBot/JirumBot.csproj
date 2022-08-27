@@ -22,31 +22,27 @@
   <ItemGroup>
     <None Remove="favicon.ico" />
     <None Remove="NLog.config" />
-    <None Remove="Setting.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Setting.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="3.7.0" />
-    <PackageReference Include="Discord.Net.Core" Version="3.7.0" />
+    <PackageReference Include="Discord.Net" Version="3.7.2" />
+    <PackageReference Include="Discord.Net.Core" Version="3.7.2" />
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
     <PackageReference Include="FluentScheduler" Version="5.5.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.45" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NLog" Version="5.0.0" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="RavenDB.Client" Version="5.3.102" />
-    <PackageReference Include="Selenium.Support" Version="4.1.1" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.1.1" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="102.0.5005.6100" />
+    <PackageReference Include="NLog" Version="5.0.2" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.0.2" />
+    <PackageReference Include="RavenDB.Client" Version="5.4.1" />
+    <PackageReference Include="Selenium.Support" Version="4.4.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.4.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="104.0.5112.7900" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,5 +53,11 @@
     <Folder Include="Database\Indexes\" />
     <Folder Include="Database\Repositories\" />
     <Folder Include="Utils\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Setting.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

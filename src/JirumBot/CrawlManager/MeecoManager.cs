@@ -11,15 +11,15 @@ namespace JirumBot.CrawlManager
 
         public override async Task<bool> FetchNewArticles()
         {
-            if (HttpClient == null | IsStopped) return false;
+            if (httpClient == null | IsStopped) return false;
 
             try
             {
-                var response = await HttpClient.GetStringAsync("https://meeco.kr/PricePlus");
+                var response = await httpClient.GetStringAsync("https://meeco.kr/PricePlus");
                 if (string.IsNullOrEmpty(response)) return false;
-                Document.LoadHtml(response);
+                document.LoadHtml(response);
 
-                var list = Document.DocumentNode.SelectNodes(Setting.Value.MeecoBasePath);
+                var list = document.DocumentNode.SelectNodes(Setting.Value.MeecoBasePath);
 
                 foreach (var node in list)
                 {
@@ -32,10 +32,10 @@ namespace JirumBot.CrawlManager
                             var title = node.SelectSingleNode("a[2]/span[1]").InnerText.Trim();
                             var url = $"https://meeco.kr{node.SelectSingleNode("a[2]").GetAttributeValue("href", "(null)")}";
 
-                            if (!title.Contains("종료") && !title.Contains("완료") && !url.Contains("(null)") && !ArticleHistories.Contains(url))
+                            if (!title.Contains("종료") && !title.Contains("완료") && !url.Contains("(null)") && !articleHistories.Contains(url))
                             {
                                 Articles.Add(new() { Title = title, Url = url });
-                                ArticleHistories.Add(url);
+                                articleHistories.Add(url);
                             }
                         }
                     }

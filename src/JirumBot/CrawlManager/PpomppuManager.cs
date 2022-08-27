@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using JirumBot.Data;
 
 namespace JirumBot.CrawlManager
 {
@@ -18,14 +19,14 @@ namespace JirumBot.CrawlManager
                 await Task.Delay(500);
                 Document.LoadHtml(Driver.PageSource);
 
-                var list = Document.DocumentNode.SelectNodes("//tbody/tr[contains(@class, 'list')]/td[3]/table[1]/tbody[1]/tr[1]/td[2]/div[1]/a[1]");
+                var list = Document.DocumentNode.SelectNodes(Setting.Value.PpomBasePath);
                 foreach (var node in list)
                 {
                     if (node != null)
                     {
                         if (!node.InnerHtml.Contains("line-through"))
                         {
-                            var title = node.SelectSingleNode("font[1]").InnerText.Trim();
+                            var title = node.SelectSingleNode(Setting.Value.PpomTitlePath).InnerText.Trim();
                             var url = $"https://www.ppomppu.co.kr/zboard{node.GetAttributeValue("href", "(null)").Replace("amp;", "")}";
 
                             if (url != "(null)" && !ArticleHistories.Contains(url))
