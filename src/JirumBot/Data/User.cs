@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace JirumBot.Data;
+﻿namespace JirumBot.Data;
 
 public class User
 {

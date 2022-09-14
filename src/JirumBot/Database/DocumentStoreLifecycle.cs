@@ -1,6 +1,5 @@
 ﻿using JirumBot.Database.Indexes;
 using Raven.Client.Documents;
-using System;
 
 namespace JirumBot.Database;
 
@@ -16,8 +15,8 @@ public class DocumentStoreLifecycle : IDisposable
             Database = "data"
         }.Initialize();
 
-        new User_ById().Execute(Store);
-        new User_ByChannelId().Execute(Store);
+        new UserById().Execute(Store);
+        new UserByChannelId().Execute(Store);
     }
 
     public void Dispose() => Store.Dispose();

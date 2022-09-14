@@ -1,7 +1,5 @@
 ﻿using JirumBot.Data;
 using Raven.Client.Documents.Session;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace JirumBot.Database.Repositories;
 
@@ -18,12 +16,12 @@ public class UserRepository
 
     public List<User> All() => _documentSession.Query<User>().ToList();
 
-    public User GetById(ulong id)
+    public User? GetById(ulong id)
     {
         return _documentSession.Query<User>().FirstOrDefault(x => x.UserId == id.ToString());
     }
 
-    public User GetByChannelId(ulong id)
+    public User? GetByChannelId(ulong id)
     {
         return _documentSession.Query<User>().FirstOrDefault(x => x.ChannelId == id.ToString());
     }

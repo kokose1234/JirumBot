@@ -1,17 +1,10 @@
-﻿using System;
-using System.IO;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace JirumBot.Data
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public sealed record Setting
+    public sealed record BotSetting
     {
-        private static readonly Lazy<Setting> Lazy = new(JsonConvert.DeserializeObject<Setting>(File.ReadAllText("./Setting.json")));
-
-        public static Setting Value => Lazy.Value;
-
-
         [JsonProperty("discordBotToken")]
         public string DiscordBotToken { get; init; }
 
@@ -80,7 +73,5 @@ namespace JirumBot.Data
 
         [JsonProperty("stopTime")]
         public TimeSpan StopTime { get; init; }
-
-        public static void Save() => File.WriteAllText("./Setting.json", JsonConvert.SerializeObject(Value, Formatting.Indented));
     }
 }

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace JirumBot.Utils;
+namespace JirumBot.Tools;
 
 public static class TimeUtil
 {

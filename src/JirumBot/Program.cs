@@ -1,96 +1,93 @@
-﻿//  Copyright 2021 Jonguk Kim
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//   Unless required by applicable law or agreed to in writing, software
-//   distributed under the License is distributed on an "AS IS" BASIS,
-//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//   See the License for the specific language governing permissions and
-//   limitations under the License.
-
-using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
-using FluentScheduler;
-using JirumBot.Command;
-using JirumBot.CrawlManager;
 using JirumBot.Data;
 using JirumBot.Database;
 using JirumBot.Database.Repositories;
-using JirumBot.Jobs;
-using Microsoft.Extensions.DependencyInjection;
+using JirumBot.Services;
+using JirumBot.Services.Crawl;
 
 namespace JirumBot
 {
-    internal static class Program
+    public class Program
     {
-        public static CommandService Service { get; private set; }
-        private static bool s_initialized;
+        private static DiscordSocketClient s_client;
 
-        private static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             Console.Title = "JirumBot";
             AppDomain.CurrentDomain.ProcessExit += CurrentDomainOnProcessExit;
-
-            await MainAsync();
-        }
-
-        private static async Task MainAsync()
-        {
-            ServiceProviderFactory.ServiceProvider = ConfigureServices();
-            var discordSocketClient = ServiceProviderFactory.ServiceProvider.GetRequiredService<DiscordSocketClient>();
-
-            discordSocketClient.Log += Log;
-            JobManager.JobException += info => Constants.Logger.GetExceptionLogger().Error(info.Exception, "작업 실행중 예외 발생");
-            Constants.DiscordClient = ServiceProviderFactory.ServiceProvider.GetRequiredService<DiscordSocketClient>();
-            Service = ServiceProviderFactory.ServiceProvider.GetRequiredService<CommandService>();
-            ServiceProviderFactory.ServiceProvider.GetRequiredService<CommandService>().Log += Log;
-
-            _ = QuasarManager.Instance;
-            _ = CoolManager.Instance;
-            _ = FmManager.Instance;
-            _ = ClienManager.Instance;
-            _ = RuliManager.Instance;
-            _ = MeecoManager.Instance;
-            _ = PpomppuManager.Instance;
-            Constants.Logger.GetLogger().Info("퀘이사존, 쿨엔조이, 뽐뿌, 펨코, 루리웹, 클리앙, 미니기기 코리아 로드 완료");
-
-#if DEBUG
-            while (true)
+            var builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
-                await ClienManager.Instance.FetchNewArticles();
-                await Task.Delay(10 * 1000);
-            }
-#endif
+                Args = args,
+                ContentRootPath = Environment.CurrentDirectory
+            });
+            builder.Configuration.AddEnvironmentVariables();
+            builder.Services.AddOptions();
 
-            await discordSocketClient.LoginAsync(TokenType.Bot, Setting.Value.DiscordBotToken);
-            await discordSocketClient.StartAsync();
-            await discordSocketClient.SetActivityAsync(new Game("돈 쓸 곳 찾기"));
-            await ServiceProviderFactory.ServiceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
+            builder.Services.Configure<BotSetting>(builder.Configuration.GetSection("BotSetting"));
+            builder.Services.AddSingleton(builder.Configuration);
 
-            discordSocketClient.Ready += DiscordSocketClientOnReady;
+            builder.Services.AddSingleton<LoggingService>();
+            builder.Services.AddSingleton<DocumentStoreLifecycle>();
+            builder.Services.AddSingleton<UserRepository>();
 
-            await Task.Delay(-1);
-        }
-
-        private static Task DiscordSocketClientOnReady()
-        {
-            if (!s_initialized)
+            var discord = new DiscordSocketClient(new DiscordSocketConfig
             {
-#if RELEASE
-                JobManager.Initialize(new CommonRegistry());
-#endif
-                s_initialized = true;
+                MessageCacheSize = short.MaxValue,
+                AlwaysDownloadDefaultStickers = true,
+                AlwaysDownloadUsers = true,
+                AlwaysResolveStickers = true,
+                GatewayIntents = GatewayIntents.All & ~GatewayIntents.GuildPresences & ~GatewayIntents.GuildInvites & ~GatewayIntents.GuildScheduledEvents
+            });
+            s_client = discord;
+            builder.Services.AddSingleton(discord);
+            builder.Services.AddSingleton(new CommandService(new CommandServiceConfig
+            {
+                LogLevel = LogSeverity.Error,
+                DefaultRunMode = Discord.Commands.RunMode.Async,
+                CaseSensitiveCommands = false,
+                IgnoreExtraArgs = true
+            }));
+            builder.Services.AddSingleton(new InteractionService(discord, new InteractionServiceConfig
+            {
+                DefaultRunMode = Discord.Interactions.RunMode.Async,
+                ExitOnMissingModalField = true,
+                EnableAutocompleteHandlers = true,
+                LogLevel = LogSeverity.Error,
+                UseCompiledLambda = true
+            }));
+
+            builder.Services.AddSingleton<StartupService>();
+
+            builder.Services.AddSingleton<ClienService>();
+            builder.Services.AddSingleton<CoolService>();
+            builder.Services.AddSingleton<FmService>();
+            builder.Services.AddSingleton<MeecoService>();
+            builder.Services.AddSingleton<PpomppuService>();
+            builder.Services.AddSingleton<QuasarService>();
+            builder.Services.AddSingleton<RuliService>();
+
+            var app = builder.Build();
+            var startup = app.Services.GetService<StartupService>();
+            if (startup == null)
+            {
+                Console.WriteLine("startup null");
+                return;
             }
 
-            return Task.CompletedTask;
+            await Task.Factory.StartNew(app.Services.GetService<ClienService>().MainTask);
+            await Task.Factory.StartNew(app.Services.GetService<CoolService>().MainTask);
+            await Task.Factory.StartNew(app.Services.GetService<FmService>().MainTask);
+            await Task.Factory.StartNew(app.Services.GetService<MeecoService>().MainTask);
+            await Task.Factory.StartNew(app.Services.GetService<PpomppuService>().MainTask);
+            await Task.Factory.StartNew(app.Services.GetService<QuasarService>().MainTask);
+            await Task.Factory.StartNew(app.Services.GetService<RuliService>().MainTask);
+
+            await startup.StartAsync();
+            await app.RunAsync();
         }
 
         private static void CurrentDomainOnProcessExit(object sender, EventArgs e)
@@ -99,45 +96,12 @@ namespace JirumBot
             Process.GetCurrentProcess().Kill(true);
         }
 
-        private static ServiceProvider ConfigureServices()
-        {
-            var flag = GatewayIntents.All;
-            flag &= ~(GatewayIntents.GuildPresences | GatewayIntents.GuildScheduledEvents | GatewayIntents.GuildInvites);
-
-            var discordSocketConfig = new DiscordSocketClient(new DiscordSocketConfig
-            {
-                MessageCacheSize = short.MaxValue,
-                AlwaysDownloadUsers = true,
-                GatewayIntents = flag
-            });
-
-            var commandService = new CommandService(new CommandServiceConfig
-            {
-                DefaultRunMode = RunMode.Async
-            });
-
-            return new ServiceCollection()
-                   .AddSingleton(discordSocketConfig)
-                   .AddSingleton(commandService)
-                   .AddSingleton<CommandHandler>()
-                   .AddSingleton<DocumentStoreLifecycle>()
-                   .AddTransient<UserRepository>()
-                   .BuildServiceProvider();
-        }
-
-        private static Task Log(LogMessage msg)
-        {
-            Constants.Logger.GetLogger().Info(msg.ToString());
-            return Task.CompletedTask;
-        }
-
         private static void StopService()
         {
             try
             {
-                Constants.DiscordClient.LogoutAsync().Wait();
-                Constants.DiscordClient.StopAsync().Wait();
-
+                s_client.LogoutAsync().Wait();
+                s_client.StopAsync().Wait();
                 foreach (var process in Process.GetProcessesByName("chromedriver")) process.Kill(true);
             }
             catch

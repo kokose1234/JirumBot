@@ -1,12 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <PlatformTarget>x64</PlatformTarget>
-    <BaseOutputPath></BaseOutputPath>
-    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -20,44 +18,34 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="favicon.ico" />
-    <None Remove="NLog.config" />
+    <PackageReference Include="Discord.Net" Version="3.8.0" />
+    <PackageReference Include="Discord.Net.Commands" Version="3.8.0" />
+    <PackageReference Include="Discord.Net.Core" Version="3.8.0" />
+    <PackageReference Include="Discord.Net.Interactions" Version="3.8.0" />
+    <PackageReference Include="Discord.Net.Rest" Version="3.8.0" />
+    <PackageReference Include="Discord.Net.WebSocket" Version="3.8.0" />
+    <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.45" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NLog" Version="5.0.4" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.0.4" />
+    <PackageReference Include="RavenDB.Client" Version="5.4.2" />
+    <PackageReference Include="Selenium.Support" Version="4.4.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.4.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="105.0.5195.5200" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="NLog.config">
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="3.7.2" />
-    <PackageReference Include="Discord.Net.Core" Version="3.7.2" />
-    <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
-    <PackageReference Include="FluentScheduler" Version="5.5.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.45" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NLog" Version="5.0.2" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.0.2" />
-    <PackageReference Include="RavenDB.Client" Version="5.4.1" />
-    <PackageReference Include="Selenium.Support" Version="4.4.0" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.4.0" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="104.0.5112.7900" />
+    <Folder Include="Command\Modules\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="favicon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Database\Indexes\" />
-    <Folder Include="Database\Repositories\" />
-    <Folder Include="Utils\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Setting.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>
