@@ -88,6 +88,8 @@ namespace JirumBot
                 JobManager.Initialize(new CommonRegistry());
 #endif
                 s_initialized = true;
+
+
             }
 
             return Task.CompletedTask;

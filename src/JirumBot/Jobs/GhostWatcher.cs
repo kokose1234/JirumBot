@@ -12,22 +12,22 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Discord;
-using FluentScheduler;
-using JirumBot.Data;
-using JirumBot.Database.Repositories;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using Discord;
+using FluentScheduler;
+using JirumBot.Data;
+using JirumBot.Database.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JirumBot.Jobs
 {
     public class GhostWatcher : IJob
     {
-        public void Execute()
+        public async void Execute()
         {
             var guild = Constants.DiscordClient.GetGuild(Setting.Value.DiscordGuildId);
             if (guild != null)
@@ -50,13 +50,13 @@ namespace JirumBot.Jobs
 
                 if (ghostUsers.Count != 0)
                 {
-                    ghostUsers.ForEach(async user =>
+                    foreach (var user in ghostUsers)
                     {
                         var builder = new EmbedBuilder();
                         var commands = Program.Service.Commands;
                         var channel = await guild.CreateTextChannelAsync($"{user.Username}-알림",
                             properties => properties.CategoryId = categoryChannel.Id, RequestOptions.Default);
-                        userRepository.Create(new User { UserId = user.Id.ToString(), ChannelId = channel.Id.ToString(), Keywords = new List<string>() });
+                        userRepository.Create(new User {UserId = user.Id.ToString(), ChannelId = channel.Id.ToString(), Keywords = new List<string>()});
 
                         builder.WithThumbnailUrl("https://cdn.discordapp.com/app-icons/821300653136805928/8caa403394f55277b851bbd841cd8b7d.png?size=512");
                         builder.WithColor(Color.Blue);
@@ -65,11 +65,17 @@ namespace JirumBot.Jobs
 
                         foreach (var command in commands)
                         {
-                            builder.AddField("/" + command.Name, string.IsNullOrEmpty(command.Summary) ? "설명이 없습니다." : command.Summary, true);
+                            if (command.Name != "유령삭제" && command.Name != "테스트모드")
+                            {
+                                builder.AddField("/" + command.Name, string.IsNullOrEmpty(command.Summary) ? "설명이 없습니다." : command.Summary, true);
+                            }
                         }
 
                         await channel.SendMessageAsync("", false, builder.Build());
-                    });
+                        await channel.AddPermissionOverwriteAsync(user,
+                            new OverwritePermissions(sendMessages: PermValue.Allow, viewChannel: PermValue.Allow, readMessageHistory: PermValue.Allow,
+                                attachFiles: PermValue.Allow, embedLinks: PermValue.Allow));
+                    }
                 }
             }
         }

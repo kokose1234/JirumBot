@@ -34,7 +34,10 @@ namespace JirumBot.Command
 
             foreach (var command in commands)
             {
-                builder.AddField("/" + command.Name, string.IsNullOrEmpty(command.Summary) ? "설명이 없습니다." : command.Summary, true);
+                if (command.Name != "유령삭제" && command.Name != "테스트모드")
+                {
+                    builder.AddField("/" + command.Name, string.IsNullOrEmpty(command.Summary) ? "설명이 없습니다." : command.Summary, true);
+                }
             }
 
             await Context.Message.ReplyAsync("", false, builder.Build());
