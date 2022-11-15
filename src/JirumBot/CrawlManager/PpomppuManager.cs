@@ -17,9 +17,9 @@ namespace JirumBot.CrawlManager
             {
                 Driver.Navigate().Refresh();
                 await Task.Delay(500);
-                Document.LoadHtml(Driver.PageSource);
+                _document.LoadHtml(Driver.PageSource);
 
-                var list = Document.DocumentNode.SelectNodes(Setting.Value.PpomBasePath);
+                var list = _document.DocumentNode.SelectNodes(Setting.Value.PpomBasePath);
                 foreach (var node in list)
                 {
                     if (node != null)
@@ -27,18 +27,28 @@ namespace JirumBot.CrawlManager
                         if (!node.InnerHtml.Contains("line-through"))
                         {
                             var title = node.SelectSingleNode(Setting.Value.PpomTitlePath).InnerText.Trim();
-                            var url = $"https://www.ppomppu.co.kr/zboard{node.GetAttributeValue("href", "(null)").Replace("amp;", "")}";
+                            var link = node.GetAttributeValue("href", "(null)").Replace("amp;", "");
+                            var url = "https://www.ppomppu.co.kr";
 
-                            if (url != "(null)" && !ArticleHistories.Contains(url))
+                            if (link.StartsWith("view.php"))
                             {
-                                Articles.Add(new() { Title = title, Url = url });
-                                ArticleHistories.Add(url);
+                                url += $"/zboard/{link}";
+                            }
+                            else
+                            {
+                                url += link;
+                            }
+
+                            if (url != "(null)" && !_articleHistories.Contains(url))
+                            {
+                                Articles.Add(new() {Title = title, Url = url});
+                                _articleHistories.Add(url);
                             }
                         }
                     }
                 }
 
-                return false;
+                return true;
             }
             catch (Exception ex)
             {

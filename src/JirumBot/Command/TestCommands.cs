@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
+using JirumBot.CrawlManager;
 using JirumBot.Data;
 using JirumBot.Database.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +29,7 @@ namespace JirumBot.Command
                                 .Where(user => guild.GetUser(ulong.Parse(user.UserId)) == null)
                                 .Select(user => guild.GetChannel(ulong.Parse(user.ChannelId)))
                                 .ToImmutableList();
-          
+
             if (ghostChannels.Count != 0)
             {
                 ghostChannels.ForEach(async channel =>
@@ -44,8 +45,23 @@ namespace JirumBot.Command
             }
         }
 
-        // [Command("루리웹테스트", true)]
-        // public async Task TestRuliWeb()
+        // [Command("테스트", true)]
+        // public async Task Test()
+        // {
+        //     if (await CoolMarketManager.Instance.FetchNewArticles())
+        //     {
+        //         var list = CoolMarketManager.Instance.Articles.ToImmutableArray();
+        //         Console.WriteLine(list.Length);
+        //
+        //         foreach (var article in list)
+        //         {
+        //             Console.WriteLine($"{article.Title} : {article.Url}");
+        //         }
+        //     }
+        // }
+        //
+        // [Command("테스트모드", true)]
+        // public async Task TestMode()
         // {
         //     if (Context.User is SocketGuildUser socketGuildUser)
         //     {
@@ -54,62 +70,10 @@ namespace JirumBot.Command
         //             await Context.Message.DeleteAsync();
         //             return;
         //         }
-        //
-        //         var guild = Constants.DiscordClient.GetGuild(Setting.Value.DiscordGuildId);
-        //         var repo = ServiceProviderFactory.ServiceProvider.GetService<UserRepository>();
-        //         if (repo == null)
-        //         {
-        //             Console.WriteLine("[RuliJob] repo가 null임.");
-        //             return;
-        //         }
-        //
-        //         var users = repo.All();
-        //
-        //         if (await Constants.RuliJirumManager.FetchNewArticle())
-        //         {
-        //             foreach (var user in users)
-        //             {
-        //                 var channel = guild?.GetTextChannel(ulong.Parse(user.ChannelId));
-        //                 if (channel != null)
-        //                 {
-        //                     try
-        //                     {
-        //                         if (user.Keywords.Any(keyword => !Constants.RuliJirumManager.LatestArticle.Title.ToLower().Contains(keyword.ToLower())))
-        //                         {
-        //                             var builder = new EmbedBuilder();
-        //
-        //                             builder.WithColor(26, 112, 220);
-        //                             builder.WithCurrentTimestamp();
-        //                             builder.WithUrl(Constants.RuliJirumManager.LatestArticle.Url);
-        //                             builder.WithTitle(Constants.RuliJirumManager.LatestArticle.Title);
-        //
-        //                             await channel.SendMessageAsync($"[테스트] {Constants.RuliJirumManager.LatestArticle.Title}", false, builder.Build());
-        //                         }
-        //                     }
-        //                     catch (Exception ex)
-        //                     {
-        //                         Console.WriteLine(ex);
-        //                     }
-        //                 }
-        //             }
-        //         }
         //     }
+        //
+        //     Constants.TestMode = true;
+        //     await Context.Message.DeleteAsync();
         // }
-
-        [Command("테스트모드", true)]
-        public async Task TestMode()
-        {
-            if (Context.User is SocketGuildUser socketGuildUser)
-            {
-                if (socketGuildUser.Roles.All(x => x.Id != Setting.Value.AdminRoleId) || Context.Channel.Id != Setting.Value.TestChannelId)
-                {
-                    await Context.Message.DeleteAsync();
-                    return;
-                }
-            }
-
-            Constants.TestMode = true;
-            await Context.Message.DeleteAsync();
-        }
     }
 }

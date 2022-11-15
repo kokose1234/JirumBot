@@ -55,6 +55,7 @@ namespace JirumBot
 
             _ = QuasarManager.Instance;
             _ = CoolManager.Instance;
+            _ = CoolMarketManager.Instance;
             _ = FmManager.Instance;
             _ = ClienManager.Instance;
             _ = RuliManager.Instance;
@@ -84,6 +85,7 @@ namespace JirumBot
         {
             if (!s_initialized)
             {
+                Constants.DiscordClient.Rest.DeleteAllGlobalCommandsAsync().Wait();
 #if RELEASE
                 JobManager.Initialize(new CommonRegistry());
 #endif

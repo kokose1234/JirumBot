@@ -59,6 +59,41 @@ namespace JirumBot.Jobs
 
                 CoolManager.Instance.Articles.Clear();
             }
+
+            //장터기능 (특정 유저 전용 기능)
+            if (await CoolMarketManager.Instance.FetchNewArticles())
+            {
+                if (CoolMarketManager.Instance.Articles.Count == 0) return;
+
+                var user = users.FirstOrDefault(x => x.UserId == "911514547129569300");
+                if (user != null)
+                {
+                    var channel = guild?.GetTextChannel(ulong.Parse(user.ChannelId));
+                    if (channel != null)
+                    {
+                        var guildUser = guild.GetUser(ulong.Parse(user.UserId));
+                        if (guildUser != null)
+                        {
+                            foreach (var article in CoolMarketManager.Instance.Articles.ToImmutableArray())
+                            {
+                                if (user.Keywords.Count > 0 && user.Keywords.Any(keyword => article.Title.ToLower().Contains(keyword.ToLower())))
+                                {
+                                    var builder = new EmbedBuilder();
+
+                                    builder.WithColor(Color.DarkGrey);
+                                    builder.WithCurrentTimestamp();
+                                    builder.WithUrl(article.Url);
+                                    builder.WithTitle(article.Title);
+
+                                    await channel.SendMessageAsync($"{guildUser.Mention}[장터] {article.Title}", false, builder.Build());
+                                }
+                            }
+                        }
+                    }
+
+                    CoolMarketManager.Instance.Articles.Clear();
+                }
+            }
         }
     }
 }

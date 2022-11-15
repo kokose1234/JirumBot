@@ -1,27 +1,29 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using JirumBot.Data;
-using OpenQA.Selenium;
 
 namespace JirumBot.CrawlManager
 {
-    public class FmManager : SimpleCrawlManager
+    public class FmManager : ChromeManager
     {
         private static FmManager s_instance;
         public static FmManager Instance => s_instance ??= new FmManager();
 
+        public FmManager()
+        {
+            Driver.Navigate().GoToUrl("https://www.fmkorea.com/index.php?mid=hotdeal&listStyle=list&page=1");
+            Task.Delay(500).Wait();
+        }
+
         public override async Task<bool> FetchNewArticles()
         {
-            if (httpClient == null | IsStopped) return false;
-
             try
             {
-                var response = await httpClient.GetStringAsync("https://www.fmkorea.com/index.php?mid=hotdeal&listStyle=list&page=1");
-                if (string.IsNullOrEmpty(response)) return false;
-                document.LoadHtml(response);
+                Driver.Navigate().Refresh();
+                await Task.Delay(500);
+                _document.LoadHtml(Driver.PageSource);
 
-                var list = document.DocumentNode.SelectNodes(Setting.Value.FmBasePath);
+                var list = _document.DocumentNode.SelectNodes(Setting.Value.FmBasePath);
 
                 foreach (var node in list)
                 {
@@ -32,10 +34,10 @@ namespace JirumBot.CrawlManager
                             var title = node.InnerText.Trim();
                             var url = $"https://www.fmkorea.com{node.GetAttributeValue("href", "(null)").Replace("&amp;", "&")}";
 
-                            if (!url.Contains("(null)") && !articleHistories.Contains(url))
+                            if (!url.Contains("(null)") && !_articleHistories.Contains(url))
                             {
                                 Articles.Add(new() { Title = title, Url = url });
-                                articleHistories.Add(url);
+                                _articleHistories.Add(url);
                             }
                         }
                     }

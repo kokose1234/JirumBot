@@ -12,15 +12,15 @@ namespace JirumBot.CrawlManager
 
         public override async Task<bool> FetchNewArticles()
         {
-            if (httpClient == null | IsStopped) return false;
+            if (_httpClient == null | IsStopped) return false;
 
             try
             {
-                var response = await httpClient.GetStringAsync("https://quasarzone.com/bbs/qb_saleinfo");
+                var response = await _httpClient.GetStringAsync("https://quasarzone.com/bbs/qb_saleinfo");
                 if (string.IsNullOrEmpty(response)) return false;
-                document.LoadHtml(response);
+                _document.LoadHtml(response);
 
-                var list = document.DocumentNode.SelectNodes(Setting.Value.QuasarBasePath);
+                var list = _document.DocumentNode.SelectNodes(Setting.Value.QuasarBasePath);
                 var regex = new Regex("&(.*?);", RegexOptions.RightToLeft);
 
                 foreach (var node in list)
@@ -31,10 +31,10 @@ namespace JirumBot.CrawlManager
                         var status = node.SelectSingleNode(Setting.Value.QuasarStatusPath).InnerText;
                         var url = $"https://quasarzone.com{node.SelectSingleNode(Setting.Value.QuasarUrlPath).GetAttributeValue("href", "(null)")}";
 
-                        if (!status.Contains("종료") && !articleHistories.Contains(url) && !url.Contains("(null)"))
+                        if (!status.Contains("종료") && !_articleHistories.Contains(url) && !url.Contains("(null)"))
                         {
                             Articles.Add(new() { Title = regex.Replace(title, ""), Url = url });
-                            articleHistories.Add(url);
+                            _articleHistories.Add(url);
                         }
                     }
                 }

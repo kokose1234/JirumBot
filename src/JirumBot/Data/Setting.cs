@@ -27,8 +27,32 @@ namespace JirumBot.Data
         [JsonProperty("adminRoleId")]
         public ulong AdminRoleId { get; init; }
 
+        [JsonProperty("coolIdPath")]
+        public string CoolIdPath { get; init; }
+
+        [JsonProperty("coolPasswordPath")]
+        public string CoolPasswordPath { get; init; }
+
+        [JsonProperty("coolLoginPath")]
+        public string CoolLoginPath { get; init; }
+
+        [JsonProperty("coolId")]
+        public string CoolId { get; init; }
+
+        [JsonProperty("coolPassword")]
+        public string CoolPassword { get; init; }
+
         [JsonProperty("coolBasePath")]
         public string CoolBasePath { get; init; }
+
+        [JsonProperty("coolMarketBasePath")]
+        public string CoolMarketBasePath { get; init; }
+
+        [JsonProperty("coolMarketTitlePath")]
+        public string CoolMarketTitlePath { get; init; }
+
+        [JsonProperty("coolMarketPricePath")]
+        public string CoolMarketPricePath { get; init; }
 
         [JsonProperty("quasarBasePath")]
         public string QuasarBasePath { get; init; }

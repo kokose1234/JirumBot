@@ -4,22 +4,26 @@ using JirumBot.Data;
 
 namespace JirumBot.CrawlManager
 {
-    public class CoolManager : SimpleCrawlManager
+    public class CoolManager : ChromeManager
     {
         private static CoolManager s_instance;
         public static CoolManager Instance => s_instance ??= new CoolManager();
 
+        public CoolManager()
+        {
+            Driver.Navigate().GoToUrl("https://coolenjoy.net/bbs/jirum");
+            Task.Delay(500).Wait();
+        }
+
         public override async Task<bool> FetchNewArticles()
         {
-            if (httpClient == null | IsStopped) return false;
-
             try
             {
-                var response = await httpClient.GetStringAsync("https://coolenjoy.net/bbs/jirum");
-                if (string.IsNullOrEmpty(response)) return false;
-                document.LoadHtml(response);
+                Driver.Navigate().Refresh();
+                await Task.Delay(500);
+                _document.LoadHtml(Driver.PageSource);
 
-                var list = document.DocumentNode.SelectNodes(Setting.Value.CoolBasePath);
+                var list = _document.DocumentNode.SelectNodes(Setting.Value.CoolBasePath);
                 foreach (var node in list)
                 {
                     if (node != null)
@@ -29,10 +33,10 @@ namespace JirumBot.CrawlManager
                             var title = node.FirstChild.InnerText.Trim();
                             var url = node.GetAttributeValue("href", "(null)");
 
-                            if (url != "(null)" && !articleHistories.Contains(url))
+                            if (url != "(null)" && !_articleHistories.Contains(url))
                             {
-                                Articles.Add(new() { Title = title, Url = url });
-                                articleHistories.Add(url);
+                                Articles.Add(new() {Title = title, Url = url});
+                                _articleHistories.Add(url);
                             }
                         }
                     }
