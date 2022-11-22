@@ -56,6 +56,8 @@ public class CoolMarketManager : ChromeManager
                 }
             }
 
+            FixLinks();
+
             return true;
         }
         catch (Exception ex)

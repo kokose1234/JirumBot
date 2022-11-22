@@ -1,6 +1,6 @@
-﻿using FluentScheduler;
+﻿using System;
+using FluentScheduler;
 using JirumBot.Data;
-using System;
 
 namespace JirumBot.Jobs
 {
@@ -15,6 +15,8 @@ namespace JirumBot.Jobs
                 now = now.AddSeconds(now.Second * -1);
                 now = now.AddMinutes(60 - now.Minute);
             }
+
+            NonReentrantAsDefault();
 
             Schedule<PpomJob>().ToRunNow().AndEvery(Setting.Value.RefreshInterval).Seconds();
             Schedule<CoolJob>().ToRunNow().AndEvery(Setting.Value.RefreshInterval).Seconds();

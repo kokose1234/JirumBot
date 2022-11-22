@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using JirumBot.Data;
@@ -12,7 +13,7 @@ namespace JirumBot.CrawlManager
         protected readonly HtmlDocument _document = new();
         protected readonly HashSet<string> _articleHistories = new();
 
-        public List<Article> Articles { get; } = new();
+        public List<Article> Articles { get; private set; } = new();
         public ChromeDriver Driver { get; }
 
         public ChromeManager()
@@ -29,5 +30,10 @@ namespace JirumBot.CrawlManager
         }
 
         public abstract Task<bool> FetchNewArticles();
+
+        protected void FixLinks()
+        {
+            Articles = Articles.Select(x => x with {Url = x.Url.Replace("amp%3B", "")}).ToList();
+        }
     }
 }

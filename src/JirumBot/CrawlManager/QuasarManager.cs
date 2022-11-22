@@ -5,20 +5,24 @@ using JirumBot.Data;
 
 namespace JirumBot.CrawlManager
 {
-    public class QuasarManager : SimpleCrawlManager
+    public class QuasarManager : ChromeManager
     {
         private static QuasarManager s_instance;
         public static QuasarManager Instance => s_instance ??= new QuasarManager();
 
+        public QuasarManager()
+        {
+            Driver.Navigate().GoToUrl("https://quasarzone.com/bbs/qb_saleinfo");
+            Task.Delay(500).Wait();
+        }
+
         public override async Task<bool> FetchNewArticles()
         {
-            if (_httpClient == null | IsStopped) return false;
-
             try
             {
-                var response = await _httpClient.GetStringAsync("https://quasarzone.com/bbs/qb_saleinfo");
-                if (string.IsNullOrEmpty(response)) return false;
-                _document.LoadHtml(response);
+                Driver.Navigate().Refresh();
+                await Task.Delay(500);
+                _document.LoadHtml(Driver.PageSource);
 
                 var list = _document.DocumentNode.SelectNodes(Setting.Value.QuasarBasePath);
                 var regex = new Regex("&(.*?);", RegexOptions.RightToLeft);
@@ -38,6 +42,8 @@ namespace JirumBot.CrawlManager
                         }
                     }
                 }
+
+                FixLinks();
 
                 return true;
             }

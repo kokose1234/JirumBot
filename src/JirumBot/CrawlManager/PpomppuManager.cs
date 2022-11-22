@@ -48,6 +48,8 @@ namespace JirumBot.CrawlManager
                     }
                 }
 
+                FixLinks();
+
                 return true;
             }
             catch (Exception ex)

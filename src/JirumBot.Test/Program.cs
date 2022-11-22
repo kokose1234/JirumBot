@@ -1,7 +1,4 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
-using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
+﻿using FluentScheduler;
 
 namespace JirumBot.Lab;
 
@@ -37,31 +34,38 @@ internal static class Program
         //     }
         // }
 
-        var document = new HtmlDocument();
-        var service = ChromeDriverService.CreateDefaultService();
-        service.HideCommandPromptWindow = true;
-        var options = new ChromeOptions();
-        options.AddArgument("disable-gpu");
-        options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.44");
-        options.AddArgument("headless");
-        var driver = new ChromeDriver(service, options);
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+        // var document = new HtmlDocument();
+        // var service = ChromeDriverService.CreateDefaultService();
+        // service.HideCommandPromptWindow = true;
+        // var options = new ChromeOptions();
+        // options.AddArgument("disable-gpu");
+        // options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.44");
+        // options.AddArgument("headless");
+        // var driver = new ChromeDriver(service, options);
+        // driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+        //
+        // driver.Navigate().GoToUrl("https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu");
+        // await Task.Delay(500);
+        // document.LoadHtml(driver.PageSource);
+        //
+        // var a = document.DocumentNode.SelectNodes("//tbody/tr[contains(@class, 'list')]/td[3]/table[1]/tbody[1]/tr[1]/td[2]/div[1]/a[1]");
+        //
+        // foreach (var node in a)
+        // {
+        //     if (!node.InnerHtml.Contains("line-through"))
+        //     {
+        //         var title = node.SelectSingleNode("font[1]").InnerText.Trim();
+        //         var url = $"https://www.ppomppu.co.kr/zboard{node.GetAttributeValue("href", "(null)").Replace("amp;", "")}";
+        //
+        //         Console.WriteLine($"{title} ({url})");
+        //     }
+        // }
 
-        driver.Navigate().GoToUrl("https://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu");
-        await Task.Delay(500);
-        document.LoadHtml(driver.PageSource);
+        JobManager.Initialize(new TestRegistry());
 
-        var a = document.DocumentNode.SelectNodes("//tbody/tr[contains(@class, 'list')]/td[3]/table[1]/tbody[1]/tr[1]/td[2]/div[1]/a[1]");
-
-        foreach (var node in a)
+        while (true)
         {
-            if (!node.InnerHtml.Contains("line-through"))
-            {
-                var title = node.SelectSingleNode("font[1]").InnerText.Trim();
-                var url = $"https://www.ppomppu.co.kr/zboard{node.GetAttributeValue("href", "(null)").Replace("amp;", "")}";
-
-                Console.WriteLine($"{title} ({url})");
-            }
+            Console.ReadLine();
         }
     }
 }

@@ -4,20 +4,24 @@ using JirumBot.Data;
 
 namespace JirumBot.CrawlManager
 {
-    public class MeecoManager : SimpleCrawlManager
+    public class MeecoManager : ChromeManager
     {
         private static MeecoManager s_instance;
         public static MeecoManager Instance => s_instance ??= new MeecoManager();
 
+        public MeecoManager()
+        {
+            Driver.Navigate().GoToUrl("https://meeco.kr/PricePlus");
+            Task.Delay(500).Wait();
+        }
+
         public override async Task<bool> FetchNewArticles()
         {
-            if (_httpClient == null | IsStopped) return false;
-
             try
             {
-                var response = await _httpClient.GetStringAsync("https://meeco.kr/PricePlus");
-                if (string.IsNullOrEmpty(response)) return false;
-                _document.LoadHtml(response);
+                Driver.Navigate().Refresh();
+                await Task.Delay(500);
+                _document.LoadHtml(Driver.PageSource);
 
                 var list = _document.DocumentNode.SelectNodes(Setting.Value.MeecoBasePath);
 
@@ -40,6 +44,8 @@ namespace JirumBot.CrawlManager
                         }
                     }
                 }
+
+                FixLinks();
 
                 return true;
             }

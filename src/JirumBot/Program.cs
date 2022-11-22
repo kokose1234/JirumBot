@@ -14,6 +14,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -38,6 +39,8 @@ namespace JirumBot
         {
             Console.Title = "JirumBot";
             AppDomain.CurrentDomain.ProcessExit += CurrentDomainOnProcessExit;
+
+            Directory.Delete("./crawl-logs", true);
 
             await MainAsync();
         }

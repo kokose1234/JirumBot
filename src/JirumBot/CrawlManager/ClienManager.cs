@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Threading.Tasks;
 using JirumBot.Data;
-using OpenQA.Selenium;
 
 namespace JirumBot.CrawlManager
 {
-    public class ClienManager : SimpleCrawlManager
+    public class ClienManager : ChromeManager
     {
         private static ClienManager s_instance;
         public static ClienManager Instance => s_instance ??= new ClienManager();
 
+        public ClienManager()
+        {
+            Driver.Navigate().GoToUrl("https://www.clien.net/service/board/jirum");
+            Task.Delay(500).Wait();
+        }
+
         public override async Task<bool> FetchNewArticles()
         {
-            if (_httpClient == null | IsStopped) return false;
-
             try
             {
-                var response = await _httpClient.GetStringAsync("https://www.clien.net/service/board/jirum");
-                if (string.IsNullOrEmpty(response)) return false;
-                _document.LoadHtml(response);
+                Driver.Navigate().Refresh();
+                await Task.Delay(500);
+                _document.LoadHtml(Driver.PageSource);
 
                 var list = _document.DocumentNode.SelectNodes(Setting.Value.ClienBasePath);
 
@@ -36,6 +39,8 @@ namespace JirumBot.CrawlManager
                         }
                     }
                 }
+
+                FixLinks();
 
                 return true;
             }

@@ -9,10 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
-    <PackageReference Include="Selenium.Support" Version="4.1.1" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.1.1" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="101.0.4951.4100" />
+    <PackageReference Include="FluentScheduler" Version="5.5.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+    <PackageReference Include="Selenium.Support" Version="4.6.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.6.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="107.0.5304.6200" />
   </ItemGroup>
 
 </Project>

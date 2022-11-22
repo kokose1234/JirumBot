@@ -4,20 +4,24 @@ using JirumBot.Data;
 
 namespace JirumBot.CrawlManager
 {
-    public class RuliManager : SimpleCrawlManager
+    public class RuliManager : ChromeManager
     {
         private static RuliManager s_instance;
         public static RuliManager Instance => s_instance ??= new RuliManager();
 
+        public RuliManager()
+        {
+            Driver.Navigate().GoToUrl("https://bbs.ruliweb.com/market/board/1020?view=default");
+            Task.Delay(500).Wait();
+        }
+
         public override async Task<bool> FetchNewArticles()
         {
-            if (_httpClient == null | IsStopped) return false;
-
             try
             {
-                var response = await _httpClient.GetStringAsync("https://bbs.ruliweb.com/market/board/1020?view=default");
-                if (string.IsNullOrEmpty(response)) return false;
-                _document.LoadHtml(response);
+                Driver.Navigate().Refresh();
+                await Task.Delay(500);
+                _document.LoadHtml(Driver.PageSource);
 
                 var list = _document.DocumentNode.SelectNodes(Setting.Value.RuliBasePath);
 
@@ -35,6 +39,8 @@ namespace JirumBot.CrawlManager
                         }
                     }
                 }
+
+                FixLinks();
 
                 return true;
             }
