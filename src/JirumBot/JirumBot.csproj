@@ -52,7 +52,6 @@
   <ItemGroup>
     <Folder Include="Database\Indexes\" />
     <Folder Include="Database\Repositories\" />
-    <Folder Include="Utils\" />
   </ItemGroup>
 
   <ItemGroup>

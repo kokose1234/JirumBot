@@ -66,14 +66,6 @@ namespace JirumBot
             _ = PpomppuManager.Instance;
             Constants.Logger.GetLogger().Info("퀘이사존, 쿨엔조이, 뽐뿌, 펨코, 루리웹, 클리앙, 미니기기 코리아 로드 완료");
 
-#if DEBUG
-            while (true)
-            {
-                await ClienManager.Instance.FetchNewArticles();
-                await Task.Delay(10 * 1000);
-            }
-#endif
-
             await discordSocketClient.LoginAsync(TokenType.Bot, Setting.Value.DiscordBotToken);
             await discordSocketClient.StartAsync();
             await discordSocketClient.SetActivityAsync(new Game("돈 쓸 곳 찾기"));
@@ -144,6 +136,7 @@ namespace JirumBot
             {
                 Constants.DiscordClient.LogoutAsync().Wait();
                 Constants.DiscordClient.StopAsync().Wait();
+                Constants.DiscordClient.Dispose();
 
                 foreach (var process in Process.GetProcessesByName("chromedriver")) process.Kill(true);
             }

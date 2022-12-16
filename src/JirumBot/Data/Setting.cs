@@ -99,12 +99,6 @@ namespace JirumBot.Data
         [JsonProperty("ghostCheckInterval")]
         public int GhostCheckInterval { get; init; }
 
-        [JsonProperty("startTime")]
-        public TimeSpan StartTime { get; init; }
-
-        [JsonProperty("stopTime")]
-        public TimeSpan StopTime { get; init; }
-
         public static void Save() => File.WriteAllText("./Setting.json", JsonConvert.SerializeObject(Value, Formatting.Indented));
     }
 }

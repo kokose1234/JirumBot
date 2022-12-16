@@ -6,7 +6,6 @@ using FluentScheduler;
 using JirumBot.CrawlManager;
 using JirumBot.Data;
 using JirumBot.Database.Repositories;
-using JirumBot.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JirumBot.Jobs
@@ -16,7 +15,6 @@ namespace JirumBot.Jobs
         public async void Execute()
         {
             if (Constants.TestMode) return;
-            if (TimeUtil.IsBetween(DateTime.Now.TimeOfDay, Setting.Value.StopTime, Setting.Value.StartTime)) return;
 
             var guild = Constants.DiscordClient.GetGuild(Setting.Value.DiscordGuildId);
             var repo = ServiceProviderFactory.ServiceProvider.GetService<UserRepository>();

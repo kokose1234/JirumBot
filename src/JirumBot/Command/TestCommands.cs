@@ -3,9 +3,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
-using Discord.WebSocket;
-using JirumBot.CrawlManager;
-using JirumBot.Data;
 using JirumBot.Database.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
