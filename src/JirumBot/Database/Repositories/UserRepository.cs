@@ -1,66 +1,61 @@
-﻿using JirumBot.Data;
-using Raven.Client.Documents.Session;
-using System.Collections.Generic;
-using System.Linq;
+﻿using JirumBot.Database.Entities;
+using JirumBot.Database.Interfaces;
+using MongoDB.Driver;
 
 namespace JirumBot.Database.Repositories;
 
-public class UserRepository
+public class UserRepository : MongoRepository<UserEntity>
 {
-    private readonly IDocumentSession _documentSession;
-    private readonly DocumentStoreLifecycle _lifecycle;
+    private IMongoContext Context { get; }
 
-    public UserRepository(DocumentStoreLifecycle lifecycle)
+    public UserRepository(IMongoContext context) : base(context.GetCollection<UserEntity>("users"))
     {
-        _lifecycle = lifecycle;
-        _documentSession = _lifecycle.Store.OpenSession();
+        Context = context;
     }
 
-    public List<User> All() => _documentSession.Query<User>().ToList();
+    public async Task<List<UserEntity>> All() => await Collection.Find(Builders<UserEntity>.Filter.Empty).ToListAsync();
 
-    public User GetById(ulong id)
+    public async Task<UserEntity> GetByUserId(ulong id)
     {
-        return _documentSession.Query<User>().FirstOrDefault(x => x.UserId == id.ToString());
+        var builder = Builders<UserEntity>.Filter;
+        var filter = builder.Eq(x => x.UserId, id);
+
+        return await Collection.Find(filter).FirstOrDefaultAsync();
     }
 
-    public User GetByChannelId(ulong id)
+    public async Task<UserEntity> GetByChannelId(ulong id)
     {
-        return _documentSession.Query<User>().FirstOrDefault(x => x.ChannelId == id.ToString());
+        var builder = Builders<UserEntity>.Filter;
+        var filter = builder.Eq(x => x.ChannelId, id);
+
+        return await Collection.Find(filter).FirstOrDefaultAsync();
     }
 
-    public void Create(User user)
-    {
-        _documentSession.Store(user);
-        _documentSession.SaveChanges();
-    }
+    public async Task Create(UserEntity user) => await InsertOneAsync(user);
 
-    public void Delete(User user)
-    {
-        _documentSession.Delete(user);
-        _documentSession.SaveChanges();
-    }
+    public async Task Delete(UserEntity user) => await DeleteOneAsync(user);
 
-    public void AddKeyword(ulong id, string keyword)
+    public async Task AddKeyword(ulong id, string keyword)
     {
-        var user = GetById(id);
+        var user = await GetByUserId(id);
         user.Keywords.Add(keyword);
 
-        _documentSession.SaveChanges();
+        await ReplaceOneAsync(user);
     }
 
-    public void DeleteKeyword(ulong id, string keyword)
+    public async Task DeleteKeyword(ulong id, string keyword)
     {
-        var user = GetById(id);
+        var user = await GetByUserId(id);
         user.Keywords.Remove(keyword);
 
-        _documentSession.SaveChanges();
+        await ReplaceOneAsync(user);
     }
 
-    public void ClearKeyword(ulong id)
+    public async Task ClearKeyword(ulong id)
     {
-        var user = GetById(id);
+        var user = await GetByUserId(id);
         user.Keywords.Clear();
 
-        _documentSession.SaveChanges();
+        await ReplaceOneAsync(user);
     }
 }
