@@ -110,7 +110,7 @@ public class SchedulerService
                                 {
                                     foreach (var article in jirumInfo.ClienArticles)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.ToLower().Contains(x.ToLower()))) continue;
+                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
                                         var builder = new EmbedBuilder();
                                         builder.WithColor(255, 168, 0);
@@ -126,7 +126,7 @@ public class SchedulerService
                                 {
                                     foreach (var article in jirumInfo.ClienArticles)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.ToLower().Contains(x.ToLower()))) continue;
+                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
                                         var builder = new EmbedBuilder();
                                         builder.WithColor(35, 47, 62);
@@ -142,7 +142,7 @@ public class SchedulerService
                                 {
                                     foreach (var article in jirumInfo.PpomArticles)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.ToLower().Contains(x.ToLower()))) continue;
+                                        if (!user.Keywords.Any(x => article.Title.Contains(x,  StringComparison.CurrentCultureIgnoreCase))) continue;
 
                                         var builder = new EmbedBuilder();
                                         builder.WithColor(Color.Blue);
@@ -158,7 +158,7 @@ public class SchedulerService
                                 {
                                     foreach (var article in jirumInfo.CoolArticles)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.ToLower().Contains(x.ToLower()))) continue;
+                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
                                         var builder = new EmbedBuilder();
                                         builder.WithColor(Color.LightGrey);
@@ -176,7 +176,7 @@ public class SchedulerService
 
                                     foreach (var article in jirumInfo.CoolMarketArticles)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.ToLower().Contains(x.ToLower()))) continue;
+                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
                                         var builder = new EmbedBuilder();
                                         builder.WithColor(Color.DarkGrey);
@@ -192,7 +192,7 @@ public class SchedulerService
                                 {
                                     foreach (var article in jirumInfo.FmArticles)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.ToLower().Contains(x.ToLower()))) continue;
+                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
                                         var builder = new EmbedBuilder();
                                         builder.WithColor(135, 206, 235);
@@ -208,7 +208,7 @@ public class SchedulerService
                                 {
                                     foreach (var article in jirumInfo.QuasarArticles)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.ToLower().Contains(x.ToLower()))) continue;
+                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
                                         var builder = new EmbedBuilder();
                                         builder.WithColor(new Color(255, 153, 0));
@@ -224,7 +224,7 @@ public class SchedulerService
                                 {
                                     foreach (var article in jirumInfo.RuliArticles)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.ToLower().Contains(x.ToLower()))) continue;
+                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
                                         var builder = new EmbedBuilder();
                                         builder.WithColor(26, 112, 220);
