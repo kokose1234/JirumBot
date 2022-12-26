@@ -45,7 +45,7 @@ namespace JirumBot
 
             var discord = new DiscordSocketClient(new DiscordSocketConfig
             {
-                LogLevel = LogSeverity.Verbose,
+                //LogLevel = LogSeverity.Verbose,
                 MessageCacheSize = short.MaxValue,
                 AlwaysDownloadDefaultStickers = true,
                 AlwaysDownloadUsers = true,

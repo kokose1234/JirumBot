@@ -3,6 +3,7 @@ using Discord.Interactions;
 using JirumBot.Data;
 using JirumBot.Database.Repositories;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 
 namespace JirumBot.Command.Modules;
 
@@ -131,5 +132,27 @@ public class UserModule : InteractionModuleBase<SocketInteractionContext>
         await _repository.ReplaceOneAsync(user);
 
         await RespondAsync("키워드 초기화 완료.", ephemeral: true);
+    }
+
+    [EnabledInDm(true)]
+    [SlashCommand("정보", "봇 정보를 확인합니다.")]
+    public async Task Info()
+    {
+        var obj = JObject.Parse(await File.ReadAllTextAsync("./JirumBot.deps.json"));
+
+        if (obj != null)
+        {
+            var builder = new EmbedBuilder();
+            builder.WithColor(Color.Blue);
+            builder.WithTitle("봇 정보");
+            builder.WithDescription("제작: 의문의 봇 장인, 아이디어: SpearDragon");
+            builder.AddField("라이브러리 리스트", "봇 제작에 사용된 라이브러리 리스트 입니다.");
+            foreach (JProperty lib in obj["targets"][".NETCoreApp,Version=v7.0"]["JirumBot/1.0.0"]["dependencies"])
+            {
+                builder.AddField(lib.Name, lib.Value);
+            }
+
+            await RespondAsync(embed: builder.Build(), ephemeral: true);
+        }
     }
 }
