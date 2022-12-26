@@ -1,13 +1,6 @@
-﻿using Discord.WebSocket;
-using JirumBot.CrawlManager;
+﻿namespace JirumBot;
 
-namespace JirumBot
+public static class Constants
 {
-    public static class Constants
-    {
-        internal static DiscordSocketClient DiscordClient { get; set; }
-        internal static Logger Logger { get; } = new();
-
-        public static bool TestMode = false;
-    }
+    public const string VERSION = "3.0.0";
 }
