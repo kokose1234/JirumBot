@@ -284,8 +284,8 @@ def startcraw(**kwargs):
         if count == len(kwargs)-1:
             driver.switch_to.window(driver.window_handles[0])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'mb_password')))
-            driver.find_element(By.NAME, 'mb_id').send_keys('chbe8041')
-            driver.find_element(By.NAME, 'mb_password').send_keys('CHbe0305!@' + Keys.ENTER)
+            driver.find_element(By.NAME, 'mb_id').send_keys('아디')
+            driver.find_element(By.NAME, 'mb_password').send_keys('비번' + Keys.ENTER)
             #WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="fboardlist"]/div[1]')))
 
         tab_num.update({key: count})
