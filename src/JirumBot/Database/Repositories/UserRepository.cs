@@ -15,7 +15,7 @@ public class UserRepository : MongoRepository<UserEntity>
 
     public async Task<List<UserEntity>> All() => await Collection.Find(Builders<UserEntity>.Filter.Empty).ToListAsync();
 
-    public async Task<UserEntity> GetByUserId(ulong id)
+    public async Task<UserEntity?> GetByUserId(ulong id)
     {
         var builder = Builders<UserEntity>.Filter;
         var filter = builder.Eq(x => x.UserId, id);
@@ -23,7 +23,7 @@ public class UserRepository : MongoRepository<UserEntity>
         return await Collection.Find(filter).FirstOrDefaultAsync();
     }
 
-    public async Task<UserEntity> GetByChannelId(ulong id)
+    public async Task<UserEntity?> GetByChannelId(ulong id)
     {
         var builder = Builders<UserEntity>.Filter;
         var filter = builder.Eq(x => x.ChannelId, id);

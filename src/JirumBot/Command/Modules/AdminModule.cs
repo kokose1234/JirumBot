@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Collections.Immutable;
+using Discord;
 using Discord.Commands;
 using JirumBot.Data;
 using JirumBot.Database.Repositories;
@@ -45,5 +46,30 @@ public class AdminModule : ModuleBase<SocketCommandContext>
     {
         var messages = await Context.Channel.GetMessagesAsync(short.MaxValue).FlattenAsync();
         await ((ITextChannel) Context.Channel).DeleteMessagesAsync(messages.Where(x => !x.IsPinned));
+    }
+
+    [Command("유령삭제", true)]
+    public async Task RemoveGhostChannel()
+    {
+        var users = await _repository.All();
+        var guild = Context.Guild;
+        var ghostChannels = users
+                            .Where(user => guild.GetUser(user.UserId) == null)
+                            .Select(user => guild.GetChannel(user.ChannelId))
+                            .ToImmutableList();
+
+        if (ghostChannels.Count != 0)
+        {
+            foreach (var channel in ghostChannels)
+            {
+                var user = await _repository.GetByChannelId(channel.Id);
+                if (user != null)
+                {
+                    await _repository.Delete(user);
+                }
+
+                await channel.DeleteAsync();
+            }
+        }
     }
 }

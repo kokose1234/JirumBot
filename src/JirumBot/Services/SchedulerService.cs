@@ -24,7 +24,7 @@ public class SchedulerService
     private readonly AmazonSQSClient _sqsClient;
     private readonly AsyncLock _mutex;
 
-    private readonly ConcurrentBag<JirumInfo> _jirumInfoList;
+    private readonly List<JirumInfo> _jirumInfoList;
 
     public SchedulerService(IOptions<DiscordSetting> option, DiscordSocketClient discord, LoggingService logging, UserRepository userRepository)
     {
@@ -89,7 +89,7 @@ public class SchedulerService
         {
             using (await _mutex.LockAsync())
             {
-                if (!_jirumInfoList.IsEmpty)
+                if (_jirumInfoList.Count != 0)
                 {
                     var users = await _userRepository.All();
                     var guild = _discord.GetGuild(_config.GuildId);
