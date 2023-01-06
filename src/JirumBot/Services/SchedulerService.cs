@@ -108,7 +108,7 @@ public class SchedulerService
                             {
                                 if (jirumInfo.CityArticles.Count > 0)
                                 {
-                                    foreach (var article in jirumInfo.ClienArticles)
+                                    foreach (var article in jirumInfo.CityArticles)
                                     {
                                         if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
@@ -204,9 +204,9 @@ public class SchedulerService
                                     }
                                 }
 
-                                if (jirumInfo.QuasarArticles.Count > 0)
+                                if (jirumInfo.BbasacArticles.Count > 0)
                                 {
-                                    foreach (var article in jirumInfo.QuasarArticles)
+                                    foreach (var article in jirumInfo.BbasacArticles)
                                     {
                                         if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
