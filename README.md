@@ -1,4 +1,5 @@
-# JirumBot [![CodeQL](https://github.com/kokose1234/JirumBot/actions/workflows/codeql.yml/badge.svg?branch=main&event=push)](https://github.com/kokose1234/JirumBot/actions/workflows/codeql.yml)
+# JirumBot [![CodeQL](https://github.com/kokose1234/JirumBot/actions/workflows/codeql.yml/badge.svg?branch=main&event=push)](https://github.com/kokose1234/JirumBot/actions/workflows/codeql.yml) [![Semgrep](https://github.com/kokose1234/JirumBot/actions/workflows/semgrep.yml/badge.svg?branch=main&event=push)](https://github.com/kokose1234/JirumBot/actions/workflows/semgrep.yml)
+
 특가 게시글 알림 디스코드 봇
 
 
