@@ -14,9 +14,6 @@ public sealed record JirumInfo
     [JsonProperty("city_articles")]
     public IList<Article> CityArticles { get; init; } = new List<Article>();
 
-    [JsonProperty("bbasac_articles")]
-    public IList<Article> BbasacArticles { get; init; } = new List<Article>();
-
     [JsonProperty("ruli_articles")]
     public IList<Article> RuliArticles { get; init; } = new List<Article>();
 

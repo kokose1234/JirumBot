@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using Amazon;
 using Amazon.SQS;
 using Amazon.SQS.Model;
@@ -39,7 +38,7 @@ public class SchedulerService
 
     public void Start()
     {
-        new Thread(GhostCheck).Start();
+        // new Thread(GhostCheck).Start();
         new Thread(SqsReceiver).Start();
         new Thread(DiscordMessageSender).Start();
     }
@@ -91,155 +90,146 @@ public class SchedulerService
             {
                 if (_jirumInfoList.Count != 0)
                 {
-                    var users = await _userRepository.All();
-                    var guild = _discord.GetGuild(_config.GuildId);
-
-                    if (guild != null)
+                    try
                     {
-                        foreach (var user in users)
+                        var users = await _userRepository.All();
+                        var guild = _discord.GetGuild(_config.GuildId);
+
+                        if (guild != null)
                         {
-                            if (user.Keywords.Count <= 0) continue;
-
-                            var channel = guild.GetTextChannel(user.ChannelId);
-                            var guildUser = guild.GetUser(user.UserId);
-                            if (channel == null || guildUser == null) continue;
-
-                            foreach (var jirumInfo in _jirumInfoList)
+                            foreach (var user in users)
                             {
-                                if (jirumInfo.CityArticles.Count > 0)
+                                if (user.Keywords.Count <= 0) continue;
+
+                                var channel = guild.GetTextChannel(user.ChannelId);
+                                var guildUser = guild.GetUser(user.UserId);
+                                if (channel == null || guildUser == null) continue;
+
+                                foreach (var jirumInfo in _jirumInfoList)
                                 {
-                                    foreach (var article in jirumInfo.CityArticles)
+                                    if (jirumInfo.CityArticles.Count > 0)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
+                                        foreach (var article in jirumInfo.CityArticles)
+                                        {
+                                            if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
-                                        var builder = new EmbedBuilder();
-                                        builder.WithColor(255, 168, 0);
-                                        builder.WithCurrentTimestamp();
-                                        builder.WithUrl(article.Url);
-                                        builder.WithTitle(article.Title);
+                                            var builder = new EmbedBuilder();
+                                            builder.WithColor(255, 168, 0);
+                                            builder.WithCurrentTimestamp();
+                                            builder.WithUrl(article.Url);
+                                            builder.WithTitle(article.Title);
 
-                                        await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                            await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                        }
                                     }
-                                }
 
-                                if (jirumInfo.ClienArticles.Count > 0)
-                                {
-                                    foreach (var article in jirumInfo.ClienArticles)
+                                    if (jirumInfo.ClienArticles.Count > 0)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
+                                        foreach (var article in jirumInfo.ClienArticles)
+                                        {
+                                            if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
-                                        var builder = new EmbedBuilder();
-                                        builder.WithColor(35, 47, 62);
-                                        builder.WithCurrentTimestamp();
-                                        builder.WithUrl(article.Url);
-                                        builder.WithTitle(article.Title);
+                                            var builder = new EmbedBuilder();
+                                            builder.WithColor(35, 47, 62);
+                                            builder.WithCurrentTimestamp();
+                                            builder.WithUrl(article.Url);
+                                            builder.WithTitle(article.Title);
 
-                                        await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                            await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                        }
                                     }
-                                }
 
-                                if (jirumInfo.PpomArticles.Count > 0)
-                                {
-                                    foreach (var article in jirumInfo.PpomArticles)
+                                    if (jirumInfo.PpomArticles.Count > 0)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.Contains(x,  StringComparison.CurrentCultureIgnoreCase))) continue;
+                                        foreach (var article in jirumInfo.PpomArticles)
+                                        {
+                                            if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
-                                        var builder = new EmbedBuilder();
-                                        builder.WithColor(Color.Blue);
-                                        builder.WithCurrentTimestamp();
-                                        builder.WithUrl(article.Url);
-                                        builder.WithTitle(article.Title);
+                                            var builder = new EmbedBuilder();
+                                            builder.WithColor(Color.Blue);
+                                            builder.WithCurrentTimestamp();
+                                            builder.WithUrl(article.Url);
+                                            builder.WithTitle(article.Title);
 
-                                        await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                            await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                        }
                                     }
-                                }
 
-                                if (jirumInfo.CoolArticles.Count > 0)
-                                {
-                                    foreach (var article in jirumInfo.CoolArticles)
+                                    if (jirumInfo.CoolArticles.Count > 0)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
+                                        foreach (var article in jirumInfo.CoolArticles)
+                                        {
+                                            if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
-                                        var builder = new EmbedBuilder();
-                                        builder.WithColor(Color.LightGrey);
-                                        builder.WithCurrentTimestamp();
-                                        builder.WithUrl(article.Url);
-                                        builder.WithTitle(article.Title);
+                                            var builder = new EmbedBuilder();
+                                            builder.WithColor(Color.LightGrey);
+                                            builder.WithCurrentTimestamp();
+                                            builder.WithUrl(article.Url);
+                                            builder.WithTitle(article.Title);
 
-                                        await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                            await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                        }
                                     }
-                                }
 
-                                if (jirumInfo.CoolMarketArticles.Count > 0)
-                                {
-                                    if (user.UserId != 911514547129569300ul) continue;
-
-                                    foreach (var article in jirumInfo.CoolMarketArticles)
+                                    if (jirumInfo.CoolMarketArticles.Count > 0)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
+                                        if (user.UserId != 911514547129569300ul) continue;
 
-                                        var builder = new EmbedBuilder();
-                                        builder.WithColor(Color.DarkGrey);
-                                        builder.WithCurrentTimestamp();
-                                        builder.WithUrl(article.Url);
-                                        builder.WithTitle(article.Title);
+                                        foreach (var article in jirumInfo.CoolMarketArticles)
+                                        {
+                                            if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
-                                        await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                            var builder = new EmbedBuilder();
+                                            builder.WithColor(Color.DarkGrey);
+                                            builder.WithCurrentTimestamp();
+                                            builder.WithUrl(article.Url);
+                                            builder.WithTitle(article.Title);
+
+                                            await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                        }
                                     }
-                                }
 
-                                if (jirumInfo.FmArticles.Count > 0)
-                                {
-                                    foreach (var article in jirumInfo.FmArticles)
+                                    if (jirumInfo.FmArticles.Count > 0)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
+                                        foreach (var article in jirumInfo.FmArticles)
+                                        {
+                                            if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
-                                        var builder = new EmbedBuilder();
-                                        builder.WithColor(135, 206, 235);
-                                        builder.WithCurrentTimestamp();
-                                        builder.WithUrl(article.Url);
-                                        builder.WithTitle(article.Title);
+                                            var builder = new EmbedBuilder();
+                                            builder.WithColor(135, 206, 235);
+                                            builder.WithCurrentTimestamp();
+                                            builder.WithUrl(article.Url);
+                                            builder.WithTitle(article.Title);
 
-                                        await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                            await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                        }
                                     }
-                                }
 
-                                if (jirumInfo.BbasacArticles.Count > 0)
-                                {
-                                    foreach (var article in jirumInfo.BbasacArticles)
+                                    if (jirumInfo.RuliArticles.Count > 0)
                                     {
-                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
+                                        foreach (var article in jirumInfo.RuliArticles)
+                                        {
+                                            if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
 
-                                        var builder = new EmbedBuilder();
-                                        builder.WithColor(new Color(255, 153, 0));
-                                        builder.WithCurrentTimestamp();
-                                        builder.WithUrl(article.Url);
-                                        builder.WithTitle(article.Title);
+                                            var builder = new EmbedBuilder();
+                                            builder.WithColor(26, 112, 220);
+                                            builder.WithCurrentTimestamp();
+                                            builder.WithUrl(article.Url);
+                                            builder.WithTitle(article.Title);
 
-                                        await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
-                                    }
-                                }
-
-                                if (jirumInfo.RuliArticles.Count > 0)
-                                {
-                                    foreach (var article in jirumInfo.RuliArticles)
-                                    {
-                                        if (!user.Keywords.Any(x => article.Title.Contains(x, StringComparison.CurrentCultureIgnoreCase))) continue;
-
-                                        var builder = new EmbedBuilder();
-                                        builder.WithColor(26, 112, 220);
-                                        builder.WithCurrentTimestamp();
-                                        builder.WithUrl(article.Url);
-                                        builder.WithTitle(article.Title);
-
-                                        await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                            await channel.SendMessageAsync($"{guildUser.Mention}{article.Title}", false, builder.Build());
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    _jirumInfoList.Clear();
+                        _jirumInfoList.Clear();
+                    }
+                    catch
+                    {
+                        //ignored
+                    }
                 }
             }
 
